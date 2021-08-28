@@ -2,6 +2,7 @@
 #include <fstream>
 #include <iostream>
 #include <type_traits>
+#include <functional>
 
 // Defined user/library classes (probably can't be changed)
 struct triangle
@@ -39,7 +40,7 @@ struct io_circle : circle, io_object
         return new io_circle(*this);
     }
 
-    static io_object* create_circle(std::ifstream& s)
+    static io_circle* create_circle(std::ifstream& s)
     {
         return new io_circle(s);
     }
@@ -57,14 +58,16 @@ struct io_triangle : triangle, io_object
         return new io_triangle(*this);
     }
 
-    static io_object* create_triangle(std::ifstream& s)
+    static io_triangle* create_triangle(std::ifstream& s)
     {
         return new io_triangle(s);
     }
 };
 
-//object creator
-using creator_t = std::add_pointer<io_object* (std::ifstream&)>::type;
+//object factory
+using old_creator_t = std::add_pointer<io_object* (std::ifstream&)>::type;
+using creator_t = std::function<io_object* (std::ifstream&)>;
+
 std::map<std::string, creator_t> io_map = {
     {"circle", &io_circle::create_circle},
     {"triangle", &io_triangle::create_triangle}
@@ -103,6 +106,11 @@ void user_func()
     else
     {
         // handle error or other figure
+    }
+
+    if (object != nullptr)
+    {
+        delete object;
     }
 }
 
