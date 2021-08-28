@@ -3,11 +3,7 @@
 #include <iostream>
 #include <type_traits>
 
-struct io_object
-{
-    virtual io_object* clone() = 0;
-};
-
+// Defined user/library classes (probably can't be changed)
 struct triangle
 {
     void print_triangle()
@@ -21,6 +17,14 @@ struct circle
     {
         std::cout << "circle" << std::endl;
     }
+};
+
+
+
+//Classes hierarchy for input circle/triangle from file, socket, etc.
+struct io_object
+{
+    virtual io_object* clone() = 0;
 };
 
 struct io_circle : circle, io_object
@@ -66,7 +70,6 @@ std::map<std::string, creator_t> io_map = {
     {"triangle", create_triangle}
 };
 
-
 io_object* get_object(std::ifstream& fs)
 {
     std::string obj_name = [](auto& fs) {
@@ -80,6 +83,8 @@ io_object* get_object(std::ifstream& fs)
 
     return nullptr;
 }
+
+
 
 // function used/created by user
 void user_func()
