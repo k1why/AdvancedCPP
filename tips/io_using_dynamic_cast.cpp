@@ -28,49 +28,42 @@ struct io_object
     virtual io_object* clone() = 0;
 };
 
-struct io_circle : circle, io_object
+template <typename T>
+struct io : public T, io_object
 {
-    io_circle(std::ifstream&)
+    io(std::ifstream&);
+
+    virtual io* clone() override
     {
-        //create from file    
+        return new io(*this);
     }
 
-    virtual io_circle* clone() override
+    static io* create(std::ifstream& s)
     {
-        return new io_circle(*this);
-    }
-
-    static io_circle* create_circle(std::ifstream& s)
-    {
-        return new io_circle(s);
+        return new io(s);
     }
 };
 
-struct io_triangle : triangle, io_object
+using io_circle = io<circle>;
+io_circle::io(std::ifstream& s)
 {
-    io_triangle(std::ifstream&)
-    {
-        //create from file    
-    }
+    //create circle from file
+}
 
-    virtual io_triangle* clone() override
-    {
-        return new io_triangle(*this);
-    }
+using io_triangle = io<triangle>;
+io_triangle::io(std::ifstream& s)
+{
+    //create triangle from file
+}
 
-    static io_triangle* create_triangle(std::ifstream& s)
-    {
-        return new io_triangle(s);
-    }
-};
 
 //object factory
 using old_creator_t = std::add_pointer<io_object* (std::ifstream&)>::type;
 using creator_t = std::function<io_object* (std::ifstream&)>;
 
 std::map<std::string, creator_t> io_map = {
-    {"circle", &io_circle::create_circle},
-    {"triangle", &io_triangle::create_triangle}
+    {"circle", &io_circle::create},
+    {"triangle", &io_triangle::create}
 };
 
 io_object* get_object(std::ifstream& fs)
