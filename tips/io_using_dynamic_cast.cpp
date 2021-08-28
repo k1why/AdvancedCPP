@@ -38,6 +38,11 @@ struct io_circle : circle, io_object
     {
         return new io_circle(*this);
     }
+
+    static io_object* create_circle(std::ifstream& s)
+    {
+        return new io_circle(s);
+    }
 };
 
 struct io_triangle : triangle, io_object
@@ -51,23 +56,18 @@ struct io_triangle : triangle, io_object
     {
         return new io_triangle(*this);
     }
+
+    static io_object* create_triangle(std::ifstream& s)
+    {
+        return new io_triangle(s);
+    }
 };
-
-static io_object* create_triangle(std::ifstream& s)
-{
-    return new io_triangle(s);
-}
-
-static io_object* create_circle(std::ifstream& s)
-{
-    return new io_circle(s);
-}
 
 //object creator
 using creator_t = std::add_pointer<io_object* (std::ifstream&)>::type;
 std::map<std::string, creator_t> io_map = {
-    {"circle", create_circle},
-    {"triangle", create_triangle}
+    {"circle", &io_circle::create_circle},
+    {"triangle", &io_triangle::create_triangle}
 };
 
 io_object* get_object(std::ifstream& fs)
