@@ -5,7 +5,6 @@
 #include <iostream>
 
 namespace pimpl {
-
 	constexpr std::uint32_t default_impl_size = 8;
 	constexpr std::uint32_t default_impl_alignment = 4;
 
@@ -54,14 +53,14 @@ namespace pimpl {
 		}
 
 		const T* operator -> () const noexcept { return get_ptr(); }
-		T* operator -> ()       noexcept { return get_ptr(); }
+			  T* operator -> ()       noexcept { return get_ptr(); }
 
 		const T& operator * () const noexcept { return *get_ptr(); }
-		T& operator * ()       noexcept { return *get_ptr(); }
+			  T& operator * ()       noexcept { return *get_ptr(); }
 
 	private:
 		const T* get_ptr() const noexcept { return std::launder(reinterpret_cast<const T*>(&m_storage)); }
-		T* get_ptr()       noexcept { return std::launder(reinterpret_cast<T*>(&m_storage)); }
+			  T* get_ptr()       noexcept { return std::launder(reinterpret_cast<T*>(&m_storage)); }
 
 		template <uint32_t actual_size, uint32_t actual_alignment>
 		constexpr void validate()
