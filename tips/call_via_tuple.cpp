@@ -20,5 +20,5 @@ int main()
 		return a + b + c;
 	};
 
-	std::cout << call_via_tuple(func, std::move(t));
+	std::cout << call_via_tuple(func, t);
 }
